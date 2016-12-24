@@ -1,0 +1,38 @@
+{
+    "name": "smochin/how-old-php-crawler",
+    "description": "A simple PHP Crawler for how-old.net",
+    "type": "library",
+    "homepage": "https://github.com/smochin/how-old-php-crawler",
+    "license": "GPL-3.0",
+    "authors": [
+        {
+            "name": "Jamerson Silva",
+            "email": "jamersonweb@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "keywords": [
+        "php",
+        "how-old",
+        "http",
+        "crawler"
+    ],
+    "require": {
+        "php": ">=7.0",
+        "ext-json": "*",
+        "guzzlehttp/guzzle": "^6.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~5.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Smochin\\HowOld\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Smochin\\HowOld\\": "test/"
+        }
+    }
+}
