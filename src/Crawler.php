@@ -9,6 +9,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use Smochin\HowOld\Exception\FacesNotDetectedException;
+use Smochin\HowOld\ValueObject\Face;
 
 class Crawler
 {
@@ -51,7 +52,19 @@ class Crawler
             throw new FacesNotDetectedException('Couldn\'t detect any faces');
         }
 
-        return $body;
+        return $this->loadFaces($body['Faces']);
+    }
+
+    /**
+     * @param array $faces
+     *
+     * @return array
+     */
+    public function loadFaces(array $faces): array
+    {
+        return array_map(function ($face) {
+            return new Face($face['attributes']['gender'], (int) round($face['attributes']['age']));
+        }, $faces);
     }
 
     /**
@@ -78,7 +91,7 @@ class Crawler
     public function analyzeAsync(string $face): PromiseInterface
     {
         return $this->client->requestAsync('POST', self::ANALYZE_ENDPOINT, [
-                    'query' => ['faceUrl' => $face],
+            'query' => ['faceUrl' => $face],
         ]);
     }
 }

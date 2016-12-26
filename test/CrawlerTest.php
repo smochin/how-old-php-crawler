@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Smochin\HowOld;
 
 use GuzzleHttp\Promise\PromiseInterface;
+use Smochin\HowOld\ValueObject\Face;
 
 class CrawlerTest extends \PHPUnit_Framework_TestCase
 {
@@ -20,15 +21,12 @@ class CrawlerTest extends \PHPUnit_Framework_TestCase
 
     public function testAnalyze()
     {
-        $result = $this->crawler->analyze('https://pbs.twimg.com/profile_images/558109954561679360/j1f9DiJi.jpeg');
-        $this->assertInternalType('array', $result);
-        $this->assertArrayHasKey('Faces', $result);
-        $this->assertCount(1, $result['Faces']);
-        $this->assertArrayHasKey('attributes', $result['Faces'][0]);
-        $this->assertArrayHasKey('gender', $result['Faces'][0]['attributes']);
-        $this->assertArrayHasKey('age', $result['Faces'][0]['attributes']);
-        $this->assertEquals('Male', $result['Faces'][0]['attributes']['gender']);
-        $this->assertEquals(60, $result['Faces'][0]['attributes']['age']);
+        $faces = $this->crawler->analyze('https://pbs.twimg.com/profile_images/558109954561679360/j1f9DiJi.jpeg');
+        $this->assertInternalType('array', $faces);
+        $this->assertCount(1, $faces);
+        $this->assertInstanceOf(Face::class, $faces[0]);
+        $this->assertTrue($faces[0]->isMale());
+        $this->assertEquals(60, $faces[0]->getAge());
     }
 
     /**
