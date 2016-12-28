@@ -9,7 +9,8 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use Smochin\HowOld\Exception\FacesNotDetectedException;
-use Smochin\HowOld\ValueObject\Face;
+use Smochin\HowOld\Util\JSONParser;
+use Smochin\HowOld\Factory\FaceFactory;
 
 class Crawler
 {
@@ -39,40 +40,14 @@ class Crawler
         $response = $this->client->request('POST', self::ANALYZE_ENDPOINT, [
             'query' => ['faceUrl' => $face],
         ]);
-        $body = self::parseBody($response->getBody()->getContents());
+        $body = JSONParser::parse($response->getBody()->getContents());
         if (count($body['Faces']) == 0) {
             throw new FacesNotDetectedException('Couldn\'t detect any faces');
         }
 
-        return $this->loadFaces($body['Faces']);
-    }
-
-    /**
-     * @param array $faces
-     *
-     * @return array
-     */
-    public function loadFaces(array $faces): array
-    {
         return array_map(function ($face) {
-            return new Face($face['attributes']['gender'], (int) round($face['attributes']['age']));
-        }, $faces);
-    }
-
-    /**
-     * @param string $body
-     *
-     * @return array
-     */
-    public static function parseBody(string $body): array
-    {
-        $body = substr($body, 1, -1);
-        $body = stripcslashes($body);
-        $body = stripcslashes($body);
-        $body = str_replace('"[', '[', $body);
-        $body = str_replace(']"', ']', $body);
-
-        return json_decode($body, true);
+            return FaceFactory::create($face['attributes']['gender'], (int) round($face['attributes']['age']));
+        }, $body['Faces']);
     }
 
     /**

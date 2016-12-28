@@ -8,12 +8,13 @@ class Face
 {
     const MALE_GENDER = 'Male';
     const FEMALE_GENDER = 'Female';
+
     private $gender;
     private $age;
 
     /**
      * @param string $gender
-     * @param float  $age
+     * @param int    $age
      *
      * @throws \InvalidArgumentException
      */
