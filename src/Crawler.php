@@ -14,11 +14,6 @@ use Smochin\HowOld\ValueObject\Face;
 class Crawler
 {
     const BASE_URI = 'https://how-old.net';
-    const QUERY = [
-        'isTest' => false,
-        'source' => null,
-        'version' => 'how-old.net',
-    ];
     const ANALYZE_ENDPOINT = '/Home/Analyze';
 
     /**
@@ -28,10 +23,7 @@ class Crawler
 
     public function __construct()
     {
-        $this->client = new Client([
-            'base_uri' => self::BASE_URI,
-            'query' => self::QUERY,
-        ]);
+        $this->client = new Client(['base_uri' => self::BASE_URI]);
     }
 
     /**
